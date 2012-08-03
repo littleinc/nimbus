@@ -340,8 +340,9 @@ static const CGFloat kTouchGutter = 22;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setTextColor:(UIColor *)textColor {
   [super setTextColor:textColor];
-
   [self.mutableAttributedString setTextColor:textColor];
+
+  [self attributedTextDidChange];
 }
 
 
@@ -356,8 +357,9 @@ static const CGFloat kTouchGutter = 22;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setFont:(UIFont *)font {
   [super setFont:font];
-
   [self.mutableAttributedString setFont:font];
+
+  [self attributedTextDidChange];
 }
 
 
