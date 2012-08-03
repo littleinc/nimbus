@@ -756,10 +756,10 @@ static const CGFloat kTouchGutter = 22;
   self.touchPoint = point;
   self.originalLink = self.touchedLink;
 
-  [self.longPressTimer invalidate];
-  if (nil != self.touchedLink) {
-    self.longPressTimer = [NSTimer scheduledTimerWithTimeInterval:kLongPressTimeInterval target:self selector:@selector(_longPressTimerDidFire:) userInfo:nil repeats:NO];
-  }
+//  [self.longPressTimer invalidate];
+//  if (nil != self.touchedLink) {
+//    self.longPressTimer = [NSTimer scheduledTimerWithTimeInterval:kLongPressTimeInterval target:self selector:@selector(_longPressTimerDidFire:) userInfo:nil repeats:NO];
+//  }
 
   [self setNeedsDisplay];
 }
@@ -787,24 +787,24 @@ static const CGFloat kTouchGutter = 22;
     }
 
     if (oldTouchedLink != self.touchedLink) {
-      [self.longPressTimer invalidate];
-      self.longPressTimer = nil;
+//      [self.longPressTimer invalidate];
+//      self.longPressTimer = nil;
       [self setNeedsDisplay];
     }
   }
 
-  // If the user moves their finger within the link beyond a certain gutter amount, reset the
-  // hold timer. The user must hold their finger still for the long press interval in order for
-  // the long press action to fire.
-  if (fabsf(self.touchPoint.x - point.x) >= kLongPressGutter
-      || fabsf(self.touchPoint.y - point.y) >= kLongPressGutter) {
-    [self.longPressTimer invalidate];
-    self.longPressTimer = nil;
-    if (nil != self.touchedLink) {
-      self.longPressTimer = [NSTimer scheduledTimerWithTimeInterval:kLongPressTimeInterval target:self selector:@selector(_longPressTimerDidFire:) userInfo:nil repeats:NO];
-      self.touchPoint = point;
-    }
-  }
+//  // If the user moves their finger within the link beyond a certain gutter amount, reset the
+//  // hold timer. The user must hold their finger still for the long press interval in order for
+//  // the long press action to fire.
+//  if (fabsf(self.touchPoint.x - point.x) >= kLongPressGutter
+//      || fabsf(self.touchPoint.y - point.y) >= kLongPressGutter) {
+//    [self.longPressTimer invalidate];
+//    self.longPressTimer = nil;
+//    if (nil != self.touchedLink) {
+//      self.longPressTimer = [NSTimer scheduledTimerWithTimeInterval:kLongPressTimeInterval target:self selector:@selector(_longPressTimerDidFire:) userInfo:nil repeats:NO];
+//      self.touchPoint = point;
+//    }
+//  }
 }
 
 
@@ -812,8 +812,8 @@ static const CGFloat kTouchGutter = 22;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
   [super touchesEnded:touches withEvent:event];
 
-  [self.longPressTimer invalidate];
-  self.longPressTimer = nil;
+//  [self.longPressTimer invalidate];
+//  self.longPressTimer = nil;
 
   UITouch* touch = [touches anyObject];
   CGPoint point = [touch locationInView:self];
@@ -841,8 +841,8 @@ static const CGFloat kTouchGutter = 22;
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
   [super touchesCancelled:touches withEvent:event];
   
-  [self.longPressTimer invalidate];
-  self.longPressTimer = nil;
+//  [self.longPressTimer invalidate];
+//  self.longPressTimer = nil;
 
   self.touchedLink = nil;
   self.originalLink = nil;
