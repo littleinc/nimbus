@@ -35,7 +35,6 @@ static const CGFloat kTouchGutter = 22;
 @interface NIAttributedLabel() <UIActionSheetDelegate>
 @property (nonatomic, readwrite, retain) NSMutableAttributedString* mutableAttributedString;
 @property (nonatomic, readwrite, assign) CTFrameRef textFrame;
-@property (readwrite, assign) BOOL detectingLinks; // Atomic.
 @property (nonatomic, readwrite, assign) BOOL linksHaveBeenDetected;
 @property (nonatomic, readwrite, copy) NSArray* detectedlinkLocations;
 @property (nonatomic, readwrite, retain) NSMutableArray* explicitLinkLocations;
@@ -66,7 +65,6 @@ static const CGFloat kTouchGutter = 22;
 
 @synthesize mutableAttributedString = _mutableAttributedString;
 @synthesize textFrame = _textFrame;
-@synthesize detectingLinks = _detectingLinks;
 @synthesize linksHaveBeenDetected = _linksHaveBeenDetected;
 @synthesize detectedlinkLocations = _detectedlinkLocations;
 @synthesize explicitLinkLocations = _explicitLinkLocations;
@@ -510,22 +508,26 @@ static const CGFloat kTouchGutter = 22;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)_deferLinkDetection {
-  if (!self.detectingLinks) {
-    self.detectingLinks = YES;
+  NSString* string = [self.mutableAttributedString.string copy];
+  NSMutableAttributedString* localMutableAttributedString = self.mutableAttributedString;
 
-    NSString* string = [self.mutableAttributedString.string copy];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-      NSArray* matches = [self _matchesFromAttributedString:string];
-      self.detectingLinks = NO;
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    if (localMutableAttributedString != self.mutableAttributedString) {
+      return;
+    }
 
-      dispatch_async(dispatch_get_main_queue(), ^{
-        self.detectedlinkLocations = matches;
-        self.linksHaveBeenDetected = YES;
+    NSArray* matches = [self _matchesFromAttributedString:string];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (localMutableAttributedString != self.mutableAttributedString) {
+        return;
+      }
 
-        [self attributedTextDidChange];
-      });
+      self.detectedlinkLocations = matches;
+      self.linksHaveBeenDetected = YES;
+
+      [self attributedTextDidChange];
     });
-  }
+  });
 }
 
 
